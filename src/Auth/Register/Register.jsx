@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import SocialLogin from "../SocialLogin/SocialLogin";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import useFullDate from "../../Hooks/useFullDate";
 import { useToast } from "@chakra-ui/react";
+import countryList from "react-select-country-list";
+import Select from "react-select";
+
+
 
 
 const Register = () => {
@@ -15,6 +18,7 @@ const Register = () => {
   const navigate = useNavigate();
   const toast = useToast()
 
+  // For React-Hook-Form
   const {
     register,
     handleSubmit,
@@ -24,8 +28,15 @@ const Register = () => {
   const { createUser, updateUserProfile } = useAuth();
   const axiosPublic = useAxiosPublic();
 
-  
+  // For Country List
+  const [countryValue, setCountryValue] = useState('')
+  const options = useMemo(() => countryList().getData(), [])
 
+  const changeHandler = value => {
+    setCountryValue(value)
+  }
+
+  //For Submit Data 
   const onSubmit = async (data) => {
    
       createUser(data.email, data.password).then((result) => {
@@ -36,6 +47,7 @@ const Register = () => {
           const userInfo = {
             name: data.name,
             email: data.email,
+            country: countryValue,
             date: date,
             status: "Active",
           };
@@ -158,6 +170,12 @@ const Register = () => {
                 </div>
               </div>
 
+               {/* Country */}
+               <div className="w-full">
+               <Select options={options}  value={countryValue} onChange={changeHandler} required/>
+              </div>
+              
+
               <input
                 className="p-2 border border-white bg-gray-700 hover:bg-gray-500 text-white rounded-lg shadow-black shadow-xl hover:shadow-md cursor-pointer text-lg font-semibold"
                 type="submit"
@@ -170,9 +188,7 @@ const Register = () => {
                 <button className="text-green-200 pl-1">Login</button>
               </Link>
             </p>
-            <div>
-              <SocialLogin></SocialLogin>
-            </div>
+            
           </div>
         </div>
       </div>

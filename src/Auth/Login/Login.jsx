@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate, } from "react-router-dom";
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../Hooks/useAuth";
 import { useToast } from "@chakra-ui/react";
 
@@ -99,9 +98,6 @@ const Login = () => {
                 <button className="text-green-200 pl-2">Register</button>
               </Link>
             </p>
-            <div>
-              <SocialLogin></SocialLogin>
-            </div>
           </div>
         </div>
       </div>

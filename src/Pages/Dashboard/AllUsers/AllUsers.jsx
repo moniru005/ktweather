@@ -13,8 +13,8 @@ import auth from "../../../Firebase/firebase.config";
 const AllUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [searchQuery, setSearchQuery] = useState("");
-  const toast = useToast()
-  const {removeUser} = useAuth();
+  const toast = useToast();
+  const { removeUser } = useAuth();
 
   // get users from user api
   const {
@@ -28,6 +28,7 @@ const AllUsers = () => {
       return res.data;
     },
   });
+
 
   if (loading) {
     return <Loading></Loading>;
@@ -50,18 +51,17 @@ const AllUsers = () => {
           if (res.data.modifiedCount > 0) {
             refetch();
             toast({
-                title: 'Success!',
-                description: `${user.name} successfully deactivated!`,
-                status: 'success',
-                duration: 2000,
-                isClosable: true,
-              });
+              title: "Success!",
+              description: `${user.name} successfully deactivated!`,
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            });
           }
         });
       }
     });
   };
-
 
   // User Delete
   const handleDeleteUser = (user) => {
@@ -80,12 +80,13 @@ const AllUsers = () => {
           console.log(res.data);
           if (res.data.deletedCount > 0) {
             toast({
-                title: 'Deleted!',
-                description: "Your file has been deleted.",
-                status: 'success',
-                duration: 2000,
-                isClosable: true,
-              });
+              title: "Deleted!",
+              description: "Your file has been deleted.",
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            });
+
             refetch();
           }
         });
@@ -93,18 +94,20 @@ const AllUsers = () => {
     });
   };
 
-    //search users
-    const filteredUsers = users.filter((user) => {
+  //search users
+  const filteredUsers = users.filter((user) => {
     const query = searchQuery.toLowerCase();
     const name = user?.name?.toLowerCase();
     const email = user.email;
     const date = user.date;
     const status = user?.status?.toLowerCase();
 
-    return name.includes(query) ||
-     email?.includes(query) ||
-     date?.includes(query) ||
-     status?.includes(query);
+    return (
+      name.includes(query) ||
+      email?.includes(query) ||
+      date?.includes(query) ||
+      status?.includes(query)
+    );
   });
 
   return (
@@ -115,8 +118,7 @@ const AllUsers = () => {
         </h3>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8"> 
-
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center font-medium mb-4">
           <h2 className=" text-xl ">All Users ({users.length})</h2>
           <div className=" lg:ml-8 flex gap-4">
@@ -152,19 +154,23 @@ const AllUsers = () => {
                 <td className={`border `}>{user.date}</td>
 
                 {/* Add / Delete User */}
-                <td className={` flex flex-row gap-4 items-center justify-center`}>
+                <td
+                  className={` flex flex-row gap-4 items-center justify-center`}
+                >
                   <Link to={`/dashboard/addUser`}>
-                    <button className="bg-slate-800 hover:bg-green-800  p-2 rounded" >
-                        <FaUserAlt className="text-white"></FaUserAlt>
+                    <button className="bg-slate-800 hover:bg-green-800  p-2 rounded">
+                      <FaUserAlt className="text-white"></FaUserAlt>
                     </button>
                   </Link>
 
-                  <button
-                    onClick={() => handleDeleteUser(user)}
-                    className="bg-red-600 p-2 rounded"
-                  >
-                    <FaTrashAlt className="text-white"></FaTrashAlt>
-                  </button>
+                  {user===user.email && (
+                    <button
+                      onClick={() => handleDeleteUser(user)}
+                      className="bg-red-600 p-2 rounded"
+                    >
+                      <FaTrashAlt className="text-white"></FaTrashAlt>
+                    </button>
+                  )}
                 </td>
 
                 {/* Change status*/}

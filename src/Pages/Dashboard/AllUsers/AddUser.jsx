@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useFullDate from "../../../Hooks/useFullDate";
 import { useToast } from "@chakra-ui/react";
-
+import countryList from "react-select-country-list";
+import Select from "react-select";
 
 const AddUser = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,49 +23,55 @@ const AddUser = () => {
   const axiosPublic = useAxiosPublic();
   const toast = useToast();
 
+  // For Country List
+  const [countryValue, setCountryValue] = useState("");
+  const options = useMemo(() => countryList().getData(), []);
+
+  const changeHandler = (value) => {
+    setCountryValue(value);
+  };
 
   const onSubmit = async (data) => {
-      createUser(data.email, data.password).then((result) => {
-        const loggedUser = result.user;
-        console.log("Logged User", loggedUser);
-        updateUserProfile(data.name, data.photoURL).then(() => {
-          console.log("User Profile Updated");
-          const userInfo = {
-            name: data.name,
-            email: data.email,
-            date: date,
-            status: "Active",
-          };
+    createUser(data.email, data.password).then((result) => {
+      const loggedUser = result.user;
+      console.log("Logged User", loggedUser);
+      updateUserProfile(data.name, data.photoURL).then(() => {
+        console.log("User Profile Updated");
+        const userInfo = {
+          name: data.name,
+          email: data.email,
+          country: countryValue,
+          date: date,
+          status: "Active",
+        };
 
-          console.log(userInfo);
+        console.log(userInfo);
 
-          axiosPublic.post("/users", userInfo).then((res) => {
-            if (res.data.insertedId) {
-              toast({
-                title: 'Success!',
-                description: `${data.name} Successfully Added`,
-                status: 'success',
-                duration: 2000,
-                isClosable: true,
-              });
-              reset();
-              navigate("/dashboard/allUsers");
-            }
-          });
+        axiosPublic.post("/users", userInfo).then((res) => {
+          if (res.data.insertedId) {
+            toast({
+              title: "Success!",
+              description: `${data.name} Successfully Added`,
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            });
+            reset();
+            navigate("/dashboard/allUsers");
+          }
         });
       });
-
+    });
   };
 
   return (
     <div className="w-full border rounded-t-md">
       <div className=" mb-4 flex flex-col justify-center items-center font-workSans w-full">
-      <div className="border-b-2  mb-4 rounded-t-md py-4 bg-gradient-to-r from-slate-700 to-black  w-full">
-        <h3 className="text-3xl text-white flex flex-col text-center">
-          <span className="">Add User</span>
-        </h3>
-        
-      </div>
+        <div className="border-b-2  mb-4 rounded-t-md py-4 bg-gradient-to-r from-slate-700 to-black  w-full">
+          <h3 className="text-3xl text-white flex flex-col text-center">
+            <span className="">Add User</span>
+          </h3>
+        </div>
         <div className=" rounded-lg p-6">
           {/* form */}
           <div className="w-[800px]">
@@ -152,9 +159,14 @@ const AddUser = () => {
                       </span>
                     )}
                   </div>
-                </div>
-              </div>
 
+                </div>
+
+                {/* Country */}
+               <div className="w-full">
+               <Select options={options}  value={countryValue} onChange={changeHandler} required/>
+              </div>
+              </div>
 
               <div className="w-full">
                 <input
