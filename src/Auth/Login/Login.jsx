@@ -1,14 +1,16 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { Link, useLocation, useNavigate, } from "react-router-dom";
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../Hooks/useAuth";
+import { useToast } from "@chakra-ui/react";
 
 const Login = () => {
   const { logIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast()
+
   
 
   const [error, setError] = useState();
@@ -26,12 +28,12 @@ const Login = () => {
       .then((res) => {
         const user = res.user;
         console.log(user);
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Logged in Successfully",
-          showConfirmButton: false,
-          timer: 1500,
+        toast({
+          title: 'Logged In.',
+          description: "You are Successfully Logged In",
+          status: 'success',
+          duration: 1000,
+          isClosable: true,
         });
         
         navigate(from, {replace: true});

@@ -1,18 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import useFullDate from "../../Hooks/useFullDate";
+import { useToast } from "@chakra-ui/react";
 
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const date = useFullDate();
   const navigate = useNavigate();
+  const toast = useToast()
+
   const {
     register,
     handleSubmit,
@@ -42,12 +44,12 @@ const Register = () => {
 
           axiosPublic.post("/users", userInfo).then((res) => {
             if (res.data.insertedId) {
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                title: `${data.name} Successfully Registered`,
-                showConfirmButton: false,
-                timer: 1500,
+              toast({
+                title: 'Success',
+                description: "You are Successfully Registered",
+                status: 'success',
+                duration: 2500,
+                isClosable: true,
               });
               reset();
               navigate("/");

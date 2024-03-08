@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import useAuth from "../../Hooks/useAuth";
 import useFullDate from "../../Hooks/useFullDate";
+import { useToast } from "@chakra-ui/react";
 
 const SocialLogin = () => {
   const { googleSignIn } = useAuth();
@@ -10,6 +11,8 @@ const SocialLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const date = useFullDate();
+  const toast = useToast()
+
 
   const handleGoogleSignIn = () => {
     googleSignIn()
@@ -21,8 +24,16 @@ const SocialLogin = () => {
           date: date,
           status: "Active",
         };
-        axiosPublic.post("/users", userInfo).then((res) => {
+        axiosPublic.post("/users", userInfo)
+        .then((res) => {
           console.log(res.data);
+          toast({
+            title: 'Logged In.',
+            description: "You are Successfully Logged In",
+            status: 'success',
+            duration: 1000,
+            isClosable: true,
+          });
           navigate(location?.state ? location.state : "/");
         });
       })
@@ -36,7 +47,7 @@ const SocialLogin = () => {
         <FaGoogle className="text-4xl text-white"></FaGoogle>
       </button>
       <p className="text-sm text-white">
-        <small>Google Sign in</small>
+        <small>Google Sign in</small>{" "}
       </p>
     </div>
   );
